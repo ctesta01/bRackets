@@ -1,29 +1,38 @@
-bRackets
-================
+---
+title: bRackets
+output: github_document
+---
 
-Currently in progress –
+Currently in progress -- 
 
-We’re working on figuring out a system compatible with ggplot2 for
-annotating figures with labelled brackets with a particular interest in
-annotating significance results.
+We're working on figuring out a system compatible with ggplot2 for annotating
+figures with labelled brackets with a particular interest in annotating
+significance results.
 
 ![](graphics/error_bars_example.png)
 
-## Installation Instructions
+## Installation Instructions 
 
-Remember: This project is currently under active development and no
-promises are made that it works (yet).
+Remember:  This project is currently under
+active development and no promises are made
+that it works (yet). 
 
-If you’d like to install it so you can load and use the `build_bracket`
-and `add_brackets` functions, you may do so using
+If you'd like to install it so you can 
+load and use the `build_bracket` and 
+`add_brackets` functions, you may do so using
 
-``` r
+```r
 remotes::install_github("ctesta01/bRackets")
 ```
 
-## Demonstration
+## Demonstration 
 
-``` r
+```{r}
+#| fig.width: 8
+#| fig.height: 4
+#| message: FALSE
+#| warning: FALSE
+#| out.width: '100%'
 library(dplyr)
 library(ggplot2)
 library(readr)
@@ -175,11 +184,8 @@ plt2 <- add_brackets(plt, bracket_specs) +
   theme(plot.margin = margin(5.5, 30, 5.5, 30))
 
 plt2
-```
 
-<img src="README_files/figure-gfm/unnamed-chunk-1-1.png" width="100%" />
 
-``` r
 # example showing with facets ---------------------------------------------
 
 plt <- plt + facet_wrap(~group)
@@ -217,5 +223,3 @@ plt2 +
   coord_cartesian(clip = "off") +
   theme(plot.margin = margin(5.5, 30, 5.5, 30))
 ```
-
-<img src="README_files/figure-gfm/unnamed-chunk-1-2.png" width="100%" />

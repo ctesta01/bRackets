@@ -1,29 +1,3 @@
-bRackets
-================
-
-Currently in progress –
-
-We’re working on figuring out a system compatible with ggplot2 for
-annotating figures with labelled brackets with a particular interest in
-annotating significance results.
-
-![](graphics/error_bars_example.png)
-
-## Installation Instructions
-
-Remember: This project is currently under active development and no
-promises are made that it works (yet).
-
-If you’d like to install it so you can load and use the `build_bracket`
-and `add_brackets` functions, you may do so using
-
-``` r
-remotes::install_github("ctesta01/bRackets")
-```
-
-## Demonstration
-
-``` r
 library(dplyr)
 library(ggplot2)
 library(readr)
@@ -43,7 +17,7 @@ df_err <- df %>%
     .groups = "drop"
   )
 
-# make a ggplot2 plot  (doesn't have bracket annotations yet) ---------------------------------------------
+# graphic without annotations ---------------------------------------------
 
 plt <- ggplot(df, aes(x = week, y = y, color = group, group = group)) +
   geom_point(
@@ -66,6 +40,9 @@ plt <- ggplot(df, aes(x = week, y = y, color = group, group = group)) +
   theme(
     axis.title.y = element_text(angle = 0, vjust = 0.5))
 
+plt
+
+
 
 # helper function ---------------------------------------------------------
 
@@ -77,11 +54,9 @@ pull_y <- function(g, w, stat = c("y_mean","ymin","ymax")) {
 }
 
 
-# determine bracket positions ------------------------------------------------------
+# setup bracket specs ------------------------------------------------------
 
-# These are all layout positioning calculations: The user should set whatever
-# position they want for their brackets.  Positions can either be determined via
-# code or also by hand.
+
 
 # Numeric x positions for discrete weeks (W1 = 1, W2 = 2)
 x_W1 <- 1
@@ -96,19 +71,11 @@ y_low_W1  <- pull_y("Low", "W1", "y_mean")
 
 # 3) High group change W1->W2 (horizontal dashed bracket near top)
 y_high_W2 <- pull_y("High", "W2", "y_mean")
-y_high_top <- max(y_high_W1, y_high_W2) + 0.35  # put bracket above the points
-y_high_bottom <- min(y_high_W1, y_high_W2) - 0.35  # put bracket below the points
-
+y_high_top <- max(y_high_W1, y_high_W2) + 0.35  # put bracket above the points; tweak as needed
 
 # 4) Low group change W1->W2 (horizontal dashed bracket near bottom)
 y_low_W2 <- pull_y("Low", "W2", "y_mean")
-y_low_bottom <- min(y_low_W1, y_low_W2) - 0.35     # put bracket below the points; tweak as needed
-
-
-# Setup Specification for Brackets -------------------------------------------------
-
-# Here is where all the setup is done: 
-# The user should specify a list specifying how each bracket should be formatted.
+y_low_bot <- min(y_low_W1, y_low_W2) - 0.35     # put bracket below the points; tweak as needed
 
 bracket_specs <- list(
   # Week 1: High vs Control (bracket is on the LEFT of W1; ticks point inward to the RIGHT)
@@ -156,7 +123,7 @@ bracket_specs <- list(
   list(
     orientation = "h",
     x0 = x_W1, x1 = x_W2,
-    y0 = y_low_bottom - .5,
+    y0 = y_low_bot - .5,
     position = "bottom",
     tick = 0.10,
     text = "*  d = 0.74",
@@ -175,11 +142,8 @@ plt2 <- add_brackets(plt, bracket_specs) +
   theme(plot.margin = margin(5.5, 30, 5.5, 30))
 
 plt2
-```
 
-<img src="README_files/figure-gfm/unnamed-chunk-1-1.png" width="100%" />
 
-``` r
 # example showing with facets ---------------------------------------------
 
 plt <- plt + facet_wrap(~group)
@@ -188,8 +152,8 @@ bracket_specs <- list(
   list(
     orientation = "h",
     x0 = x_W1, x1 = x_W2,
-    y0 = y_high_bottom - .5,
-    position = "bottom",
+    y0 = y_high_top + .5,
+    position = "top",
     tick = 0.10,
     text = "***  d = -0.76",
     color = "black",
@@ -200,7 +164,7 @@ bracket_specs <- list(
   list(
     orientation = "h",
     x0 = x_W1, x1 = x_W2,
-    y0 = y_low_bottom - .5,
+    y0 = y_low_bot - .5,
     position = "bottom",
     tick = 0.10,
     text = "*  d = 0.74",
@@ -216,6 +180,3 @@ plt2 <- add_brackets(plt, bracket_specs)
 plt2 +
   coord_cartesian(clip = "off") +
   theme(plot.margin = margin(5.5, 30, 5.5, 30))
-```
-
-<img src="README_files/figure-gfm/unnamed-chunk-1-2.png" width="100%" />
